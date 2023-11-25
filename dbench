@@ -1,0 +1,49 @@
+#!/bin/bash
+
+function run () {
+    user=$1
+    shift
+    docker exec -itu "${user}" frappe bash -c "$@"
+}
+
+if [[ $# -eq 0 ]]; then
+    docker exec -it frappe bash
+elif [[ "$1" == 'init-frappe' ]]; then
+    run root "chown -R frappe:frappe /home/frappe"
+    run frappe "cd .. && bench init frappe-bench --python python3.11 --ignore-exist --skip-redis-config-generation --frappe-branch=version-15"
+    run frappe "cp /home/frappe/frappe-bench-settings/Procfile_docker /home/frappe/frappe-bench/Procfile"
+    run frappe "cp /home/frappe/frappe-bench-settings/common_site_config_docker.json /home/frappe/frappe-bench/sites/common_site_config.json"
+    run frappe "bench set-mariadb-host mariadb"
+elif [[ "$1" == 'init-erpnext' ]]; then
+    run frappe "echo 'site name' \$SITE_NAME"
+    run frappe "bench new-site \$SITE_NAME"
+    run frappe "bench get-app erpnext https://github.com/frappe/erpnext --branch version-15"
+    run frappe "bench --site \$SITE_NAME install-app erpnext"
+    run frappe "bench update --patch"
+elif [[ "$1" == 'setup' ]]; then
+    if [[ "$2" == 'docker' ]]; then
+        if [[ "$3" == '--swarm-mode' ]]; then
+            echo "Docker swarm mode is not currently supported"
+        elif [[ "$3" == 'down' ]]; then
+            docker-compose down
+        elif [[ "$3" == 'stop' ]]; then
+            docker-compose stop
+        else
+            docker-compose up -d
+        fi
+    elif [[ "$2" == 'hosts' ]]; then
+        a=$(run frappe "ls sites/*/site_config.json | grep -o '/.\+/'") \
+        a="${a//$'\n'/ }"
+        a=$(echo "$a" | tr -d / )
+        result="127.0.0.1 ${a}"
+        run root "echo ${result} | tee --append /etc/hosts"
+    fi
+elif [[ "$1" == '-c' ]]; then
+    shift
+    user=$1
+    shift
+    run "$user" "$@"
+else
+    IFS=" "
+    run frappe "bench $*"
+fi

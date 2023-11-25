@@ -1,0 +1,64 @@
+version: '3.7'
+services:
+  mariadb:
+    image: mariadb:11.1.3
+    environment:
+      - MARIADB_ROOT_PASSWORD=frappe
+    volumes:
+        - ./conf/mariadb-conf.d:/etc/mysql/conf.d:ro
+        - ./conf/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+        - mariadb-data-volumes:/var/lib/mysql
+    ports:
+      - 3306:3306
+    container_name: mariadb
+
+  redis-cache:
+    image: redis:7.2.3
+    volumes:
+      - ./conf/redis-conf.d:/etc/conf.d
+    command: ["redis-server","/etc/conf.d/redis_cache.conf"]
+    container_name: redis-cache
+
+  redis-queue:
+    image: redis:7.2.3
+    volumes:
+      - ./conf/redis-conf.d:/etc/conf.d
+    command: ["redis-server","/etc/conf.d/redis_queue.conf"]
+    container_name: redis-queue
+
+  redis-socketio:
+    image: redis:7.2.3
+    volumes:
+      - ./conf/redis-conf.d:/etc/conf.d
+    command: ["redis-server","/etc/conf.d/redis_socketio.conf"]
+    container_name: redis-socketio
+
+  frappe:
+    image: frappe:1.0
+    build: .
+    volumes:
+      - ./frappe-bench:/home/frappe/frappe-bench:rw
+      - ./conf/frappe:/home/frappe/frappe-conf
+    env_file:
+      - conf/frappe/environment.env
+    ports:
+      - "80:8000" # Webserver Port
+      - "443:443" # Webserver Port
+      - "9000:9000" # Socketio Port
+      - "6787:6787" # File Watcher Port
+    stdin_open: true
+    tty: true
+    links:
+      - redis-cache
+      - redis-queue
+      - redis-socketio
+      - mariadb
+    depends_on:
+      - mariadb
+      - redis-cache
+      - redis-queue
+      - redis-socketio
+    container_name: frappe
+
+volumes:
+  mariadb-data-volumes:
