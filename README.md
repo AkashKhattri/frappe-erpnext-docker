@@ -54,6 +54,10 @@ These instruction will create container which is needed to run Frappe framework 
 
         ./dbench setup hosts
 
+#### Then run following command
+
+        ./dbench use <your-site-name> (default: erpdev.com)
+
 #### You can run all the bench command from git bash using
 
         ./dbench <comands>  (Don't use bench in command eg: ./dbench start without bench)
