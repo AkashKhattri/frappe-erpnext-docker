@@ -23,8 +23,9 @@ ENV TZ=Asia
 # place timezone data /etc/timezone
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+
+
 RUN apt install python3.11-full -y
-RUN apt-get install git -y
 RUN apt-get install python3-dev -y
 RUN apt-get install python3-setuptools python3-pip -y
 RUN apt install python3.11-venv -y
@@ -61,28 +62,3 @@ USER frappe
 
 RUN mkdir -p /home/frappe/frappe-bench
 WORKDIR /home/frappe/frappe-bench
-
-
-
-
-
-
-
-
-
-# ENV MONGO_DB_USERNAME=admin \
-#     MONGO_DB_PWD=password
-
-# RUN mkdir -p /home/app
-
-# COPY ./app /home/app
-
-# # set default dir so that next commands executes in /home/app dir
-# WORKDIR /home/app
-
-# # will execute npm install in /home/app because of WORKDIR
-# RUN npm install
-
-# # no need for /home/app/server.js because of WORKDIR
-# CMD ["node", "server.js"]
-
