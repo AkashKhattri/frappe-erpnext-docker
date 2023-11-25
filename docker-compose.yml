@@ -37,7 +37,7 @@ services:
     image: frappe:1.0
     build: .
     volumes:
-      - ./frappe-bench:/home/frappe/frappe-bench:rw
+      - frappe-bench-volume:/home/frappe/frappe-bench:rw
       - ./conf/frappe:/home/frappe/frappe-conf
     env_file:
       - conf/frappe/environment.env
@@ -62,3 +62,4 @@ services:
 
 volumes:
   mariadb-data-volumes:
+  frappe-bench-volume:

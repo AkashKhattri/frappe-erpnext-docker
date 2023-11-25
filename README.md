@@ -10,17 +10,29 @@ These instruction will create container which is needed to run Frappe framework 
 
 ### Build the container and install bench
 
-* Clone the repo with\
+* Clone the repo with
 
         git clone <-URL of the repo->\
 
         cd frappe-docker-setup
 
-* Build the frappe container with\
+* Bind mounts
+
+    When you use a bind mount, a file or directory on the host machine is mounted into a container. The file or directory is referenced by its absolute path on the host machine. By contrast, when you use a volume, a new directory is created within Docker's storage directory on the host machine, and Docker manages that directory's contents.
+
+    If you want to use bind mounts replace this line in docker-compose.yml file inside frappe-docker-setup
+
+            - frappe-bench-volume:/home/frappe/frappe-bench:rw
+    with
+
+            - ./frappe-bench:/home/frappe/frappe-bench:rw
+
+
+* Build the frappe container with
 
         docker build -t frappe:1.0 .
 
-* For next step if you are using windows be sure to use git bash terminal because the commands are bash commands specifically made for linux based system and git bash already provide this interface\
+* For next step if you are using windows be sure to use git bash terminal because the commands are bash commands specifically made for linux based system and git bash already provide this interface
 
     Enter the folder location if your not in the frappe-docker-setup folder the following command will create all the required containers.
 
