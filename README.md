@@ -30,7 +30,7 @@ These instruction will create container which is needed to run Frappe framework 
 
 * Build the frappe container with
 
-        docker build -t frappe:1.0 .
+        docker build -t frappe:15.0 .
 
 * For next step if you are using windows be sure to use git bash terminal because the commands are bash commands specifically made for linux based system and git bash already provide this interface
 

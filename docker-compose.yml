@@ -34,7 +34,7 @@ services:
     container_name: redis-socketio
 
   frappe:
-    image: frappe:1.0
+    image: frappe:15.0
     build: .
     volumes:
       - frappe-bench-volume:/home/frappe/frappe-bench:rw
