@@ -6,7 +6,7 @@ services:
       - MARIADB_ROOT_PASSWORD=frappe
     volumes:
         - ./conf/mariadb-conf.d:/etc/mysql/conf.d:ro
-        - ./conf/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+        - ./conf/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
         - mariadb-data-volumes:/var/lib/mysql
     ports:
       - 3306:3306

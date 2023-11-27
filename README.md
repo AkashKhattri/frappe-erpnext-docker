@@ -48,7 +48,19 @@ These instruction will create container which is needed to run Frappe framework 
     Run these command to setup frappe and erpnext
 
         .\dbench init-frappe
+
         .\dbench init-erpnext  (for installing erp next)
+
+    If you get mysql/mariadb access denied error then please run the following command
+
+        docker exec -it mariadb bash
+
+        root@f206bfa4df54:/# mariadb -uroot -p<your-database-password> (default password is frappe)
+
+        MariaDB [(none)]> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '<your-database-password>' WITH GRANT OPTION;
+
+        MariaDB [(none)]> FLUSH PRIVILEGES;
+
 
 #### Frappe and erpnext installation is done for step you need to use it every time you start your container
 
